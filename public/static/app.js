@@ -19,6 +19,155 @@ const initials = n => (n || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join(''
 const badge = p => `<span class="platform-badge pb-${esc(p)}"><i class="fas ${PLATFORM_ICONS[p] || 'fa-circle'}"></i>${esc(p)}</span>`;
 
 let currentView = 'dashboard';
+let currentUser = null;
+
+/* ---------- auth / landing ---------- */
+const $topbar = document.getElementById('topbar');
+
+async function checkAuth() {
+  try {
+    const { data } = await axios.get('/api/auth/me');
+    if (data.authenticated) { currentUser = data; enterApp(); return; }
+  } catch (e) { /* fallthrough */ }
+  renderLanding();
+}
+
+function enterApp() {
+  $topbar.style.display = '';
+  renderUserChip();
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-view=dashboard]').classList.add('active');
+  render('dashboard');
+}
+
+function renderUserChip() {
+  let chip = document.getElementById('user-chip');
+  if (chip) chip.remove();
+  chip = document.createElement('div');
+  chip.id = 'user-chip';
+  chip.className = 'flex items-center gap-2 text-xs';
+  chip.innerHTML = `
+    ${currentUser.demo ? '<span class="platform-badge" style="background:#f7ddda;color:#b8443a">Demo</span>' : ''}
+    <span class="font-semibold hidden sm:inline" style="color:#57534b">${esc(currentUser.name || currentUser.email)}</span>
+    <button id="logout-btn" class="btn-soft rounded-lg px-3 py-1.5 font-semibold" title="Sign out"><i class="fas fa-right-from-bracket"></i></button>`;
+  document.querySelector('#topbar > div').appendChild(chip);
+  document.getElementById('logout-btn').onclick = async () => {
+    await axios.post('/api/auth/logout');
+    currentUser = null;
+    location.reload();
+  };
+}
+
+function renderLanding() {
+  $topbar.style.display = 'none';
+  $app.innerHTML = `
+  <section id="landing" class="fade-in min-h-[85vh] flex flex-col justify-center py-8">
+    <div class="grid lg:grid-cols-2 gap-10 items-center max-w-6xl mx-auto w-full">
+
+      <div>
+        <p class="font-bold text-sm mb-3 tracking-wide" style="color:#d2604f">YOUR NETWORK, UNIFIED</p>
+        <h1 class="text-4xl sm:text-5xl font-bold leading-tight mb-5" style="color:#2a2a2a">
+          MyConnect <span style="color:#d2604f">Hub</span> CRM
+        </h1>
+        <p class="text-lg mb-6" style="color:#8a8378">
+          Bring your phone, email, LinkedIn, Facebook, Instagram and TikTok contacts into one
+          intelligent CRM. Merge duplicates automatically and let the AI engine discover
+          shared interests, friendships and business matches across your entire network.
+        </p>
+        <ul class="space-y-3 text-sm mb-8">
+          <li class="flex items-center gap-3"><span class="avatar" style="background:#3d3d3d;width:2rem;height:2rem"><i class="fas fa-file-import text-xs"></i></span><span style="color:#57534b">Import from 6 platforms — CSV and vCard supported</span></li>
+          <li class="flex items-center gap-3"><span class="avatar" style="background:#d2604f;width:2rem;height:2rem"><i class="fas fa-wand-magic-sparkles text-xs"></i></span><span style="color:#57534b">AI discovery engine researches contacts for interest matches</span></li>
+          <li class="flex items-center gap-3"><span class="avatar" style="background:#8a8378;width:2rem;height:2rem"><i class="fas fa-people-arrows text-xs"></i></span><span style="color:#57534b">See who shares interests, companies and cities across your network</span></li>
+        </ul>
+      </div>
+
+      <div class="card p-7 max-w-md w-full mx-auto" id="auth-card">
+        <div class="flex gap-1 mb-5 p-1 rounded-full" style="background:#f3e9da" id="auth-tabs">
+          <button data-tab="signin" class="auth-tab active flex-1">Sign in</button>
+          <button data-tab="signup" class="auth-tab flex-1">Create account</button>
+        </div>
+
+        <form id="signin-form" class="space-y-3">
+          <input name="email" type="email" placeholder="Email" required class="w-full">
+          <input name="password" type="password" placeholder="Password" required class="w-full">
+          <button class="btn-primary rounded-lg w-full py-2.5 font-semibold text-sm">Sign in</button>
+        </form>
+
+        <form id="signup-form" class="space-y-3 hidden">
+          <input name="name" placeholder="Your name" class="w-full">
+          <input name="email" type="email" placeholder="Email" required class="w-full">
+          <input name="password" type="password" placeholder="Password (6+ characters)" required minlength="6" class="w-full">
+          <button class="btn-primary rounded-lg w-full py-2.5 font-semibold text-sm">Create my account</button>
+        </form>
+
+        <div class="flex items-center gap-3 my-4">
+          <div class="h-px flex-1" style="background:#eadfcd"></div>
+          <span class="text-xs" style="color:#a89d8d">or</span>
+          <div class="h-px flex-1" style="background:#eadfcd"></div>
+        </div>
+
+        <button id="google-btn" class="w-full border rounded-full py-2.5 text-sm font-semibold flex items-center justify-center gap-2 bg-white hover:shadow-md transition" style="border-color:#eadfcd;color:#3d3d3d">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.4 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.1 0 11.2-2 15-5.5l-7.5-5.8c-2.1 1.4-4.7 2.2-7.5 2.2-6.3 0-11.7-3.9-13.6-9.4l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="mt-5 pt-5 border-t" style="border-color:#eadfcd">
+          <p class="text-xs font-semibold mb-2" style="color:#8a8378"><i class="fas fa-bolt mr-1" style="color:#d2604f"></i>Just want a look around? Try the instant demo:</p>
+          <form id="demo-form" class="flex gap-2">
+            <input name="email" type="email" placeholder="Enter your email" required class="flex-1 text-sm">
+            <button class="rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90" style="background:#d2604f">Demo</button>
+          </form>
+        </div>
+
+        <p id="auth-error" class="text-xs mt-3 hidden" style="color:#c0492f"></p>
+      </div>
+    </div>
+  </section>`;
+
+  const showError = msg => {
+    const el = document.getElementById('auth-error');
+    el.textContent = msg; el.classList.remove('hidden');
+  };
+
+  document.getElementById('auth-tabs').addEventListener('click', e => {
+    const tab = e.target.closest('.auth-tab'); if (!tab) return;
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('signin-form').classList.toggle('hidden', tab.dataset.tab !== 'signin');
+    document.getElementById('signup-form').classList.toggle('hidden', tab.dataset.tab !== 'signup');
+  });
+
+  document.getElementById('signin-form').onsubmit = async e => {
+    e.preventDefault();
+    try {
+      const f = Object.fromEntries(new FormData(e.target));
+      const { data } = await axios.post('/api/auth/login', f);
+      currentUser = data; enterApp();
+    } catch (err) { showError(err.response?.data?.error || 'Sign in failed'); }
+  };
+  document.getElementById('signup-form').onsubmit = async e => {
+    e.preventDefault();
+    try {
+      const f = Object.fromEntries(new FormData(e.target));
+      const { data } = await axios.post('/api/auth/signup', f);
+      currentUser = data; enterApp();
+    } catch (err) { showError(err.response?.data?.error || 'Sign up failed'); }
+  };
+  document.getElementById('demo-form').onsubmit = async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    try {
+      const f = Object.fromEntries(new FormData(e.target));
+      const { data } = await axios.post('/api/auth/demo', f);
+      currentUser = data; enterApp();
+    } catch (err) { btn.textContent = 'Demo'; showError(err.response?.data?.error || 'Demo failed'); }
+  };
+  document.getElementById('google-btn').onclick = async () => {
+    try { await axios.post('/api/auth/google'); }
+    catch (err) { showError(err.response?.data?.message || 'Google sign-in is not configured yet — use email or the demo.'); }
+  };
+}
 
 /* ---------- navigation ---------- */
 document.getElementById('main-nav').addEventListener('click', e => {
@@ -64,7 +213,29 @@ async function renderDashboard() {
         </div>
       </article>
     </div>
+
+    <article class="card p-5 mt-4" id="ai-engine">
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+        <h2 class="font-semibold">
+          <span class="ai-pulse-dot"></span>
+          <i class="fas fa-wand-magic-sparkles mr-1" style="color:#d2604f"></i>AI Discovery Engine
+        </h2>
+        <button id="ai-scan-btn" class="btn-primary rounded-lg px-4 py-2 text-sm font-semibold"><i class="fas fa-radar mr-1"></i>Run Discovery Scan</button>
+      </div>
+      <p class="text-xs text-[#8a8378] mb-4">The connector scans your contacts and researches public signals — roles, companies, locations and platform activity — to surface potential interest matches.</p>
+      <div class="grid lg:grid-cols-2 gap-4">
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wide text-[#a89d8d] mb-2">Live activity</h3>
+          <div id="ai-feed" class="ai-feed"><p class="text-xs text-[#a89d8d] py-6 text-center">Press “Run Discovery Scan” to start the engine.</p></div>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wide text-[#a89d8d] mb-2">Suggested interest matches</h3>
+          <div id="ai-suggestions" class="space-y-2 max-h-72 overflow-y-auto"><p class="text-xs text-[#a89d8d] py-6 text-center">Suggestions will appear here after a scan.</p></div>
+        </div>
+      </div>
+    </article>
   </section>`;
+  document.getElementById('ai-scan-btn').onclick = runDiscovery;
   if (s.by_platform?.length) {
     new Chart(document.getElementById('platform-chart'), {
       type: 'doughnut',
@@ -76,6 +247,77 @@ async function renderDashboard() {
     });
   }
 }
+/* ---------- AI Discovery Engine ---------- */
+async function runDiscovery() {
+  const $feed = document.getElementById('ai-feed');
+  const $sugg = document.getElementById('ai-suggestions');
+  const $btn = document.getElementById('ai-scan-btn');
+  $btn.disabled = true;
+  $btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Scanning…';
+  $feed.innerHTML = '';
+  $sugg.innerHTML = '<p class="text-xs text-[#a89d8d] py-6 text-center"><i class="fas fa-spinner fa-spin mr-1"></i>Waiting for scan results…</p>';
+
+  const log = (icon, text, cls) => {
+    const row = document.createElement('div');
+    row.className = `ai-log-row ${cls || ''}`;
+    row.innerHTML = `<i class="fas ${icon}"></i><span>${text}</span>`;
+    $feed.appendChild(row);
+    $feed.scrollTop = $feed.scrollHeight;
+    while ($feed.children.length > 40) $feed.removeChild($feed.firstChild);
+  };
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  // Kick off the real scan while the feed narrates
+  const scanPromise = axios.get('/api/discover/scan');
+  log('fa-plug-circle-bolt', 'Connector online — authenticating session…', 'ai-sys');
+  await sleep(500);
+  log('fa-address-book', 'Loading your contact graph…', 'ai-sys');
+  await sleep(600);
+
+  const { data } = await scanPromise;
+  log('fa-users', `${data.scanned} contacts queued for research`, 'ai-sys');
+  await sleep(400);
+
+  const seen = new Set();
+  const searchable = data.suggestions.filter(s => { if (seen.has(s.contact_id)) return false; seen.add(s.contact_id); return true; });
+  const sources = ['public profiles', 'company pages', 'news mentions', 'social activity', 'industry directories'];
+  for (let i = 0; i < searchable.length; i++) {
+    const s = searchable[i];
+    log('fa-magnifying-glass', `Researching <b>${esc(s.contact_name)}</b> — crawling ${sources[i % sources.length]}…`);
+    await sleep(260 + Math.random() * 340);
+    log('fa-lightbulb', `Signal found: <b>${esc(s.contact_name)}</b> → likely interested in <b>${esc(s.interest)}</b> (${s.confidence}% confidence)`, 'ai-hit');
+    await sleep(180 + Math.random() * 220);
+  }
+  log('fa-circle-check', `Scan complete — ${data.suggestions.length} potential interest matches surfaced`, 'ai-done');
+
+  if (!data.suggestions.length) {
+    $sugg.innerHTML = '<p class="text-xs text-[#a89d8d] py-6 text-center">No new suggestions — your contacts are fully tagged. Import more contacts and scan again.</p>';
+  } else {
+    $sugg.innerHTML = data.suggestions.map((s, i) => `
+      <div class="ai-suggestion card p-3" id="sugg-${i}">
+        <div class="flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <p class="text-sm font-semibold truncate">${esc(s.contact_name)} <span class="text-[#a89d8d] font-normal">→</span> <span style="color:#d2604f">${esc(s.interest)}</span>
+              ${s.matches_you ? '<span class="platform-badge ml-1" style="background:#f7ddda;color:#b8443a">matches you</span>' : ''}
+            </p>
+            <p class="text-xs text-[#8a8378]">${esc(s.reason)} · ${s.confidence}% confidence</p>
+          </div>
+          <button class="apply-sugg btn-soft rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap" data-cid="${s.contact_id}" data-interest="${esc(s.interest)}" data-idx="${i}">Apply</button>
+        </div>
+      </div>`).join('');
+    $sugg.querySelectorAll('.apply-sugg').forEach(btn => btn.onclick = async () => {
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      await axios.post('/api/discover/apply', { contact_id: +btn.dataset.cid, interest: btn.dataset.interest });
+      const card = document.getElementById('sugg-' + btn.dataset.idx);
+      card.style.opacity = '.45';
+      btn.outerHTML = '<span class="text-xs font-bold" style="color:#3d3d3d"><i class="fas fa-check mr-1"></i>Applied</span>';
+      log('fa-tag', `Tagged <b>${esc(btn.dataset.interest)}</b> and recomputed matches`, 'ai-done');
+    });
+  }
+  $btn.disabled = false;
+  $btn.innerHTML = '<i class="fas fa-radar mr-1"></i>Run Discovery Scan';
+}
+
 const statCard = (icon, color, val, label) => `
   <article class="card p-4 text-center">
     <i class="fas ${icon} ${color} text-2xl mb-2"></i>
@@ -428,4 +670,11 @@ async function renderInterests() {
 }
 
 /* ---------- boot ---------- */
-render('dashboard');
+axios.interceptors.response.use(r => r, err => {
+  if (err.response?.status === 401 && !err.config.url.includes('/api/auth/')) {
+    currentUser = null;
+    renderLanding();
+  }
+  return Promise.reject(err);
+});
+checkAuth();

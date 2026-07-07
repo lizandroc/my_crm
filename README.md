@@ -10,6 +10,9 @@
 - **Production**: not deployed yet (Cloudflare Pages ready)
 
 ## Currently Completed Features
+- Landing/intro page with sign-in, create-account, Google button (placeholder until OAuth Client ID provided) and instant email demo
+- Auth: email+password accounts (PBKDF2 hashed), 30-day cookie sessions, per-user data isolation; demo accounts auto-seeded and upgradeable to real accounts
+- AI Discovery Engine on dashboard: live activity feed narrating contact research, interest-match suggestions with confidence scores, one-click Apply that tags + recomputes matches
 - ✅ **Dashboard** — total contacts, matches, multi-platform people, interests, doughnut chart of contacts by platform
 - ✅ **Contact list** — search, filter by platform & relationship type, avatar cards with platform badges + interest tags
 - ✅ **Contact detail** — sources, interests (add/remove), matches with other contacts, interaction log (notes/calls/meetings), edit/delete
@@ -22,6 +25,10 @@
 ## Functional API Endpoints
 | Method | Path | Purpose |
 |---|---|---|
+| POST | `/api/auth/signup` `/api/auth/login` `/api/auth/demo` `/api/auth/logout` | Auth flows |
+| GET | `/api/auth/me` | Session check |
+| GET | `/api/discover/scan` | AI engine: scan contacts for interest suggestions |
+| POST | `/api/discover/apply` | Apply a suggestion (tag interest + recompute) |
 | GET | `/api/stats` | Dashboard stats |
 | GET | `/api/contacts?q=&platform=&relationship=` | List/search contacts |
 | GET/PUT/DELETE | `/api/contacts/:id` | Contact detail / update / delete |
@@ -35,7 +42,7 @@
 
 ## Data Architecture
 - **Storage**: Cloudflare D1 (SQLite) — local dev uses `--local` SQLite in `.wrangler/state`
-- **Tables**: `contacts`, `contact_sources` (platform links), `interests`, `contact_interests`, `my_interests`, `matches`, `interactions`
+- **Tables**: `users`, `sessions`, `contacts`, `contact_sources` (platform links), `interests`, `contact_interests`, `my_interests`, `matches`, `interactions`
 - **Data flow**: file upload → parser (CSV/vCard) → dedupe upsert → source tagging → match recompute
 
 ## User Guide
@@ -54,7 +61,8 @@
 - Fuzzy name matching (nicknames, typos) for dedupe
 - Reminders / follow-up scheduling
 - Export CRM back to CSV
-- Multi-user auth (currently single-user)
+- Real Google OAuth (button present; needs GOOGLE_CLIENT_ID)
+- Live web scraping in discovery engine (edge runtime can't scrape; currently signal-based inference — can wire a search API)
 
 ## Recommended Next Steps
 1. Deploy to Cloudflare Pages + create production D1 database
