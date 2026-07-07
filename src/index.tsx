@@ -409,18 +409,26 @@ app.get('/', (c) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ConnectHub CRM — Your Unified Network</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
   <link href="/static/styles.css" rel="stylesheet">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
-  <header id="topbar" class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <h1 class="text-xl font-bold flex items-center gap-2">
-        <i class="fas fa-circle-nodes text-indigo-400"></i>
-        Connect<span class="text-indigo-400">Hub</span> CRM
+<body class="min-h-screen">
+  <div id="bg-decor" aria-hidden="true">
+    <div class="blob blob-green"></div>
+    <div class="blob blob-coral"></div>
+    <div class="blob blob-sand"></div>
+    <div class="deco-ring"></div>
+  </div>
+  <header id="topbar" class="sticky top-0 z-40" style="background:rgba(250,245,238,.85);backdrop-filter:blur(10px);border-bottom:1px solid #eadfcd">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+      <h1 class="text-xl font-bold flex items-center gap-2" style="color:#24402f">
+        <i class="fas fa-circle-nodes" style="color:#2f5d43"></i>
+        Connect<span style="color:#d2604f">Hub</span>&nbsp;CRM
       </h1>
-      <nav id="main-nav" class="flex gap-1 text-sm">
+      <nav id="main-nav" class="flex gap-1 text-sm flex-wrap">
         <button data-view="dashboard" class="nav-btn active"><i class="fas fa-chart-pie mr-1"></i>Dashboard</button>
         <button data-view="contacts" class="nav-btn"><i class="fas fa-address-book mr-1"></i>Contacts</button>
         <button data-view="import" class="nav-btn"><i class="fas fa-file-import mr-1"></i>Import</button>

@@ -12,7 +12,7 @@ const PLATFORMS = [
 ];
 const PLATFORM_ICONS = { phone: 'fa-mobile-screen', email: 'fa-envelope', linkedin: 'fa-brands fa-linkedin', facebook: 'fa-brands fa-facebook', instagram: 'fa-brands fa-instagram', tiktok: 'fa-brands fa-tiktok', manual: 'fa-pen' };
 const REL_TYPES = ['unknown', 'friend', 'business', 'family', 'acquaintance'];
-const MATCH_LABELS = { shared_interest: { icon: 'fa-heart', label: 'Shared Interest', color: 'text-pink-400' }, same_company: { icon: 'fa-building', label: 'Same Company', color: 'text-amber-400' }, same_location: { icon: 'fa-location-dot', label: 'Same Location', color: 'text-sky-400' } };
+const MATCH_LABELS = { shared_interest: { icon: 'fa-heart', label: 'Shared Interest', color: 'text-[#d2604f]' }, same_company: { icon: 'fa-building', label: 'Same Company', color: 'text-[#a05f1f]' }, same_location: { icon: 'fa-location-dot', label: 'Same Location', color: 'text-[#2d5c86]' } };
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 const initials = n => (n || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -40,27 +40,27 @@ function render(view) {
 
 /* ---------- Dashboard ---------- */
 async function renderDashboard() {
-  $app.innerHTML = '<div class="text-slate-400 py-10 text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</div>';
+  $app.innerHTML = '<div class="text-[#8a8378] py-10 text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</div>';
   const { data: s } = await axios.get('/api/stats');
-  const platRows = (s.by_platform || []).map(p => `<div class="flex justify-between items-center py-1.5">${badge(p.platform)}<span class="font-semibold">${p.n}</span></div>`).join('') || '<p class="text-slate-500 text-sm">No imports yet</p>';
+  const platRows = (s.by_platform || []).map(p => `<div class="flex justify-between items-center py-1.5">${badge(p.platform)}<span class="font-semibold">${p.n}</span></div>`).join('') || '<p class="text-[#a89d8d] text-sm">No imports yet</p>';
   $app.innerHTML = `
   <section class="fade-in">
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      ${statCard('fa-address-book', 'text-indigo-400', s.total_contacts, 'Total Contacts')}
-      ${statCard('fa-people-arrows', 'text-pink-400', s.total_matches, 'Matches Found')}
-      ${statCard('fa-layer-group', 'text-teal-400', s.multi_platform_contacts, 'Multi-Platform People')}
-      ${statCard('fa-heart', 'text-amber-400', s.total_interests, 'Interests Tracked')}
+      ${statCard('fa-address-book', 'text-[#2f5d43]', s.total_contacts, 'Total Contacts')}
+      ${statCard('fa-people-arrows', 'text-[#d2604f]', s.total_matches, 'Matches Found')}
+      ${statCard('fa-layer-group', 'text-[#2f5d43]', s.multi_platform_contacts, 'Multi-Platform People')}
+      ${statCard('fa-heart', 'text-[#c98a2e]', s.total_interests, 'Interests Tracked')}
     </div>
     <div class="grid lg:grid-cols-2 gap-4">
       <article class="card p-5">
-        <h2 class="font-semibold mb-3"><i class="fas fa-chart-pie text-indigo-400 mr-2"></i>Contacts by Platform</h2>
+        <h2 class="font-semibold mb-3"><i class="fas fa-chart-pie text-[#2f5d43] mr-2"></i>Contacts by Platform</h2>
         <div class="max-w-xs mx-auto"><canvas id="platform-chart"></canvas></div>
       </article>
       <article class="card p-5">
-        <h2 class="font-semibold mb-3"><i class="fas fa-list text-indigo-400 mr-2"></i>Platform Breakdown</h2>
+        <h2 class="font-semibold mb-3"><i class="fas fa-list text-[#2f5d43] mr-2"></i>Platform Breakdown</h2>
         ${platRows}
-        <div class="mt-4 pt-4 border-t border-slate-800">
-          <button onclick="document.querySelector('[data-view=import]').click()" class="w-full bg-indigo-600 hover:bg-indigo-500 rounded-lg py-2.5 font-semibold text-sm"><i class="fas fa-file-import mr-2"></i>Import Contacts</button>
+        <div class="mt-4 pt-4 border-t border-[#eadfcd]">
+          <button onclick="document.querySelector('[data-view=import]').click()" class="w-full btn-primary rounded-lg py-2.5 font-semibold text-sm"><i class="fas fa-file-import mr-2"></i>Import Contacts</button>
         </div>
       </article>
     </div>
@@ -70,9 +70,9 @@ async function renderDashboard() {
       type: 'doughnut',
       data: {
         labels: s.by_platform.map(p => p.platform),
-        datasets: [{ data: s.by_platform.map(p => p.n), backgroundColor: ['#22c55e', '#f97316', '#3b82f6', '#60a5fa', '#ec4899', '#a1a1aa', '#8b5cf6'], borderWidth: 0 }]
+        datasets: [{ data: s.by_platform.map(p => p.n), backgroundColor: ['#2f5d43', '#d2604f', '#5b8aa6', '#8fb996', '#e0a458', '#7d7468', '#a97c9e'], borderWidth: 3, borderColor: '#ffffff', hoverOffset: 10 }]
       },
-      options: { plugins: { legend: { labels: { color: '#94a3b8' } } } }
+      options: { plugins: { legend: { labels: { color: '#5a5245', font: { family: 'Quicksand', weight: '600' } } } } }
     });
   }
 }
@@ -80,7 +80,7 @@ const statCard = (icon, color, val, label) => `
   <article class="card p-4 text-center">
     <i class="fas ${icon} ${color} text-2xl mb-2"></i>
     <div class="text-2xl font-bold">${val}</div>
-    <div class="text-xs text-slate-400">${label}</div>
+    <div class="text-xs text-[#8a8378]">${label}</div>
   </article>`;
 
 /* ---------- Contacts ---------- */
@@ -98,7 +98,7 @@ async function renderContacts() {
         <option value="">All relationships</option>
         ${REL_TYPES.map(r => `<option value="${r}">${r}</option>`).join('')}
       </select>
-      <button id="add-contact-btn" class="bg-indigo-600 hover:bg-indigo-500 rounded-lg px-4 py-2 text-sm font-semibold"><i class="fas fa-plus mr-1"></i>Add</button>
+      <button id="add-contact-btn" class="btn-primary rounded-lg px-4 py-2 text-sm font-semibold"><i class="fas fa-plus mr-1"></i>Add</button>
     </div>
     <div id="contact-list"></div>
   </section>`;
@@ -109,17 +109,17 @@ async function renderContacts() {
     const { data } = await axios.get('/api/contacts', { params: { q, platform, relationship } });
     const list = document.getElementById('contact-list');
     if (!data.contacts.length) {
-      list.innerHTML = '<div class="card p-10 text-center text-slate-500"><i class="fas fa-inbox text-3xl mb-3 block"></i>No contacts yet. Import your contacts to get started!</div>';
+      list.innerHTML = '<div class="card p-10 text-center text-[#a89d8d]"><i class="fas fa-inbox text-3xl mb-3 block"></i>No contacts yet. Import your contacts to get started!</div>';
       return;
     }
     list.innerHTML = `<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">` + data.contacts.map(ct => `
-      <article class="card contact-card p-4 cursor-pointer hover:border-indigo-500 transition" data-id="${ct.id}">
+      <article class="card contact-card p-4 cursor-pointer transition" data-id="${ct.id}">
         <div class="flex items-start gap-3">
           <div class="avatar" style="background:${esc(ct.avatar_color)}">${initials(ct.full_name)}</div>
           <div class="min-w-0 flex-1">
             <h3 class="font-semibold truncate">${esc(ct.full_name)}</h3>
-            <p class="text-xs text-slate-400 truncate">${esc(ct.job_title || '')}${ct.job_title && ct.company ? ' · ' : ''}${esc(ct.company || '')}</p>
-            <p class="text-xs text-slate-500 truncate">${esc(ct.email || ct.phone || '')}</p>
+            <p class="text-xs text-[#8a8378] truncate">${esc(ct.job_title || '')}${ct.job_title && ct.company ? ' · ' : ''}${esc(ct.company || '')}</p>
+            <p class="text-xs text-[#a89d8d] truncate">${esc(ct.email || ct.phone || '')}</p>
             <div class="flex flex-wrap gap-1 mt-2">${(ct.platforms || '').split(',').filter(Boolean).map(badge).join('')}</div>
             ${ct.interests ? `<div class="flex flex-wrap gap-1 mt-1.5">${ct.interests.split('|').slice(0, 3).map(i => `<span class="interest-tag">${esc(i)}</span>`).join('')}</div>` : ''}
           </div>
@@ -146,61 +146,61 @@ async function openContact(id) {
           <div class="avatar" style="background:${esc(c.avatar_color)};width:3.5rem;height:3.5rem;font-size:1.2rem">${initials(c.full_name)}</div>
           <div>
             <h2 class="text-xl font-bold">${esc(c.full_name)}</h2>
-            <p class="text-sm text-slate-400">${esc(c.job_title || '')}${c.job_title && c.company ? ' @ ' : ''}${esc(c.company || '')}</p>
+            <p class="text-sm text-[#8a8378]">${esc(c.job_title || '')}${c.job_title && c.company ? ' @ ' : ''}${esc(c.company || '')}</p>
             <div class="flex gap-1 mt-1">${data.sources.map(s => badge(s.platform)).join('')}</div>
           </div>
         </div>
-        <button id="close-detail" class="text-slate-500 hover:text-white text-xl"><i class="fas fa-xmark"></i></button>
+        <button id="close-detail" class="text-[#a89d8d] hover:text-[#233c2d] text-xl"><i class="fas fa-xmark"></i></button>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-3 text-sm mb-4">
-        ${c.email ? `<p><i class="fas fa-envelope text-slate-500 mr-2 w-4"></i>${esc(c.email)}</p>` : ''}
-        ${c.phone ? `<p><i class="fas fa-phone text-slate-500 mr-2 w-4"></i>${esc(c.phone)}</p>` : ''}
-        ${c.location ? `<p><i class="fas fa-location-dot text-slate-500 mr-2 w-4"></i>${esc(c.location)}</p>` : ''}
-        <p><i class="fas fa-user-tag text-slate-500 mr-2 w-4"></i>${esc(c.relationship_type)} · strength ${'★'.repeat(c.strength)}${'☆'.repeat(5 - c.strength)}</p>
+        ${c.email ? `<p><i class="fas fa-envelope text-[#a89d8d] mr-2 w-4"></i>${esc(c.email)}</p>` : ''}
+        ${c.phone ? `<p><i class="fas fa-phone text-[#a89d8d] mr-2 w-4"></i>${esc(c.phone)}</p>` : ''}
+        ${c.location ? `<p><i class="fas fa-location-dot text-[#a89d8d] mr-2 w-4"></i>${esc(c.location)}</p>` : ''}
+        <p><i class="fas fa-user-tag text-[#a89d8d] mr-2 w-4"></i>${esc(c.relationship_type)} · strength ${'★'.repeat(c.strength)}${'☆'.repeat(5 - c.strength)}</p>
       </div>
-      ${c.notes ? `<p class="text-sm bg-slate-900 rounded-lg p-3 mb-4 text-slate-300"><i class="fas fa-note-sticky text-slate-500 mr-2"></i>${esc(c.notes)}</p>` : ''}
+      ${c.notes ? `<p class="text-sm bg-[#faf5ee] rounded-lg p-3 mb-4 text-[#4a5a4e]"><i class="fas fa-note-sticky text-[#a89d8d] mr-2"></i>${esc(c.notes)}</p>` : ''}
 
       <section class="mb-4">
-        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-heart text-pink-400 mr-1"></i>Interests</h3>
+        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-heart text-[#d2604f] mr-1"></i>Interests</h3>
         <div class="flex flex-wrap gap-1.5 mb-2">
-          ${data.interests.map(i => `<span class="interest-tag">${esc(i.name)} <button class="del-interest hover:text-red-400" data-iid="${i.id}"><i class="fas fa-xmark"></i></button></span>`).join('') || '<span class="text-slate-500 text-xs">None yet</span>'}
+          ${data.interests.map(i => `<span class="interest-tag">${esc(i.name)} <button class="del-interest hover:text-[#c0492f]" data-iid="${i.id}"><i class="fas fa-xmark"></i></button></span>`).join('') || '<span class="text-[#a89d8d] text-xs">None yet</span>'}
         </div>
         <form id="add-interest-form" class="flex gap-2">
           <input name="name" placeholder="Add interest (e.g. film production)" class="flex-1 text-sm">
-          <button class="bg-slate-700 hover:bg-slate-600 rounded-lg px-3 text-sm"><i class="fas fa-plus"></i></button>
+          <button class="btn-soft rounded-lg px-3 text-sm"><i class="fas fa-plus"></i></button>
         </form>
       </section>
 
       <section class="mb-4">
-        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-people-arrows text-teal-400 mr-1"></i>Connections & Matches (${data.matches.length})</h3>
+        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-people-arrows text-[#2f5d43] mr-1"></i>Connections & Matches (${data.matches.length})</h3>
         <div class="space-y-1.5 max-h-44 overflow-y-auto">
           ${data.matches.map(m => {
             const ml = MATCH_LABELS[m.match_type] || {};
-            return `<div class="flex items-center gap-2 text-sm bg-slate-900 rounded-lg px-3 py-2">
+            return `<div class="flex items-center gap-2 text-sm bg-[#faf5ee] rounded-lg px-3 py-2">
               <div class="avatar" style="background:${esc(m.other_color)};width:1.6rem;height:1.6rem;font-size:.6rem">${initials(m.other_name)}</div>
               <span class="font-medium">${esc(m.other_name)}</span>
               <span class="text-xs ${ml.color || ''} ml-auto"><i class="fas ${ml.icon || ''} mr-1"></i>${esc(m.match_detail || ml.label || m.match_type)}</span>
             </div>`;
-          }).join('') || '<p class="text-slate-500 text-xs">No matches yet — add interests, company or location, then recompute matches.</p>'}
+          }).join('') || '<p class="text-[#a89d8d] text-xs">No matches yet — add interests, company or location, then recompute matches.</p>'}
         </div>
       </section>
 
       <section class="mb-4">
-        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-clock-rotate-left text-amber-400 mr-1"></i>Interaction Log</h3>
+        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-clock-rotate-left text-[#c98a2e] mr-1"></i>Interaction Log</h3>
         <form id="add-note-form" class="flex gap-2 mb-2">
           <select name="kind" class="text-sm"><option>note</option><option>call</option><option>meeting</option><option>email</option><option>message</option></select>
           <input name="content" placeholder="What happened?" class="flex-1 text-sm">
-          <button class="bg-slate-700 hover:bg-slate-600 rounded-lg px-3 text-sm"><i class="fas fa-plus"></i></button>
+          <button class="btn-soft rounded-lg px-3 text-sm"><i class="fas fa-plus"></i></button>
         </form>
         <div class="space-y-1 max-h-32 overflow-y-auto">
-          ${data.interactions.map(n => `<p class="text-xs text-slate-400 bg-slate-900 rounded px-2.5 py-1.5"><span class="uppercase text-slate-500 font-semibold mr-2">${esc(n.kind)}</span>${esc(n.content)} <span class="text-slate-600 float-right">${esc((n.created_at || '').slice(0, 16))}</span></p>`).join('') || ''}
+          ${data.interactions.map(n => `<p class="text-xs text-[#8a8378] bg-[#faf5ee] rounded px-2.5 py-1.5"><span class="uppercase text-[#a89d8d] font-semibold mr-2">${esc(n.kind)}</span>${esc(n.content)} <span class="text-[#c4b9a4] float-right">${esc((n.created_at || '').slice(0, 16))}</span></p>`).join('') || ''}
         </div>
       </section>
 
-      <div class="flex gap-2 pt-3 border-t border-slate-800">
-        <button id="edit-contact" class="flex-1 bg-indigo-600 hover:bg-indigo-500 rounded-lg py-2 text-sm font-semibold"><i class="fas fa-pen mr-1"></i>Edit</button>
-        <button id="delete-contact" class="bg-red-900/60 hover:bg-red-800 text-red-300 rounded-lg px-4 text-sm"><i class="fas fa-trash"></i></button>
+      <div class="flex gap-2 pt-3 border-t border-[#eadfcd]">
+        <button id="edit-contact" class="flex-1 btn-primary rounded-lg py-2 text-sm font-semibold"><i class="fas fa-pen mr-1"></i>Edit</button>
+        <button id="delete-contact" class="btn-danger rounded-lg px-4 text-sm"><i class="fas fa-trash"></i></button>
       </div>
     </div>
   </div>`;
@@ -250,13 +250,13 @@ function openContactForm(c, onDone) {
           <input name="location" placeholder="Location / City" value="${esc(c?.location || '')}">
           <select name="relationship_type">${REL_TYPES.map(r => `<option ${c?.relationship_type === r ? 'selected' : ''}>${r}</option>`).join('')}</select>
         </div>
-        <label class="block text-slate-400 text-xs">Relationship strength: <span id="strength-val">${c?.strength || 3}</span>/5
+        <label class="block text-[#8a8378] text-xs">Relationship strength: <span id="strength-val">${c?.strength || 3}</span>/5
           <input name="strength" type="range" min="1" max="5" value="${c?.strength || 3}" class="w-full" oninput="document.getElementById('strength-val').textContent=this.value">
         </label>
         <textarea name="notes" placeholder="Notes" rows="2" class="w-full">${esc(c?.notes || '')}</textarea>
         <div class="flex gap-2 pt-2">
-          <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 rounded-lg py-2 font-semibold">Save</button>
-          <button type="button" id="cancel-form" class="bg-slate-700 rounded-lg px-4">Cancel</button>
+          <button type="submit" class="flex-1 btn-primary rounded-lg py-2 font-semibold">Save</button>
+          <button type="button" id="cancel-form" class="btn-soft rounded-lg px-4">Cancel</button>
         </div>
       </form>
     </div>
@@ -279,20 +279,20 @@ function renderImport() {
   $app.innerHTML = `
   <section class="fade-in max-w-3xl mx-auto">
     <h2 class="text-lg font-bold mb-1">Import Your Contacts</h2>
-    <p class="text-sm text-slate-400 mb-5">Social networks don't allow apps to pull contacts directly — but you can export them yourself and upload here. Duplicates are automatically merged across platforms.</p>
+    <p class="text-sm text-[#8a8378] mb-5">Social networks don't allow apps to pull contacts directly — but you can export them yourself and upload here. Duplicates are automatically merged across platforms.</p>
     <div class="grid sm:grid-cols-2 gap-3 mb-6" id="platform-cards">
       ${PLATFORMS.map(p => `
-        <button class="card p-4 text-left hover:border-indigo-500 transition platform-pick" data-platform="${p.id}">
-          <i class="fas ${p.icon} text-indigo-400 text-xl mb-2 block"></i>
+        <button class="card p-4 text-left transition platform-pick" data-platform="${p.id}">
+          <i class="fas ${p.icon} text-[#2f5d43] text-xl mb-2 block"></i>
           <span class="font-semibold text-sm">${p.label}</span>
-          <p class="text-xs text-slate-500 mt-1">${p.hint}</p>
+          <p class="text-xs text-[#a89d8d] mt-1">${p.hint}</p>
         </button>`).join('')}
     </div>
     <div id="upload-area" class="hidden">
       <div class="drop-zone p-10 text-center cursor-pointer" id="drop-zone">
-        <i class="fas fa-cloud-arrow-up text-3xl text-indigo-400 mb-3 block"></i>
+        <i class="fas fa-cloud-arrow-up text-3xl text-[#2f5d43] mb-3 block"></i>
         <p class="font-semibold" id="upload-title">Drop your file here or click to browse</p>
-        <p class="text-xs text-slate-500 mt-1">Accepts .csv and .vcf files (max 1000 contacts per import)</p>
+        <p class="text-xs text-[#a89d8d] mt-1">Accepts .csv and .vcf files (max 1000 contacts per import)</p>
         <input type="file" id="file-input" accept=".csv,.vcf,.txt" class="hidden">
       </div>
       <div id="import-result" class="mt-4"></div>
@@ -300,8 +300,8 @@ function renderImport() {
   </section>`;
   let selectedPlatform = null;
   document.querySelectorAll('.platform-pick').forEach(btn => btn.onclick = () => {
-    document.querySelectorAll('.platform-pick').forEach(b => b.classList.remove('border-indigo-500', 'ring-1', 'ring-indigo-500'));
-    btn.classList.add('border-indigo-500', 'ring-1', 'ring-indigo-500');
+    document.querySelectorAll('.platform-pick').forEach(b => b.classList.remove('ring-2', 'ring-[#2f5d43]'));
+    btn.classList.add('ring-2', 'ring-[#2f5d43]');
     selectedPlatform = btn.dataset.platform;
     document.getElementById('upload-area').classList.remove('hidden');
     document.getElementById('upload-title').textContent = `Upload your ${PLATFORMS.find(p => p.id === selectedPlatform).label} file`;
@@ -316,20 +316,20 @@ function renderImport() {
 
   async function upload(file) {
     const $r = document.getElementById('import-result');
-    $r.innerHTML = '<p class="text-slate-400"><i class="fas fa-spinner fa-spin mr-2"></i>Importing & matching…</p>';
+    $r.innerHTML = '<p class="text-[#8a8378]"><i class="fas fa-spinner fa-spin mr-2"></i>Importing & matching…</p>';
     const fd = new FormData();
     fd.append('file', file);
     fd.append('platform', selectedPlatform);
     try {
       const { data } = await axios.post('/api/import', fd);
       $r.innerHTML = `
-        <div class="card p-4 border-green-800 fade-in">
-          <p class="font-semibold text-green-400 mb-1"><i class="fas fa-check-circle mr-1"></i>Import complete!</p>
-          <p class="text-sm text-slate-300">Parsed <b>${data.parsed}</b> rows → <b>${data.added}</b> new contacts added, <b>${data.merged}</b> merged with existing people. <b>${data.matches}</b> total matches computed.</p>
-          <button onclick="document.querySelector('[data-view=contacts]').click()" class="mt-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg px-4 py-2 text-sm font-semibold">View Contacts →</button>
+        <div class="card p-4 border-[#bcd6c2] fade-in">
+          <p class="font-semibold text-[#2f5d43] mb-1"><i class="fas fa-check-circle mr-1"></i>Import complete!</p>
+          <p class="text-sm text-[#4a5a4e]">Parsed <b>${data.parsed}</b> rows → <b>${data.added}</b> new contacts added, <b>${data.merged}</b> merged with existing people. <b>${data.matches}</b> total matches computed.</p>
+          <button onclick="document.querySelector('[data-view=contacts]').click()" class="mt-3 btn-primary rounded-lg px-4 py-2 text-sm font-semibold">View Contacts →</button>
         </div>`;
     } catch (err) {
-      $r.innerHTML = `<div class="card p-4 border-red-800"><p class="text-red-400 text-sm"><i class="fas fa-triangle-exclamation mr-1"></i>${esc(err.response?.data?.error || 'Import failed')}</p></div>`;
+      $r.innerHTML = `<div class="card p-4 border-[#eec6bd]"><p class="text-[#c0492f] text-sm"><i class="fas fa-triangle-exclamation mr-1"></i>${esc(err.response?.data?.error || 'Import failed')}</p></div>`;
     }
     fi.value = '';
   }
@@ -347,7 +347,7 @@ async function renderMatches() {
         <option value="same_company">Same company</option>
         <option value="same_location">Same location</option>
       </select>
-      <button id="recompute-btn" class="bg-indigo-600 hover:bg-indigo-500 rounded-lg px-4 py-2 text-sm font-semibold"><i class="fas fa-rotate mr-1"></i>Recompute</button>
+      <button id="recompute-btn" class="btn-primary rounded-lg px-4 py-2 text-sm font-semibold"><i class="fas fa-rotate mr-1"></i>Recompute</button>
     </div>
     <div id="match-list"></div>
   </section>`;
@@ -356,7 +356,7 @@ async function renderMatches() {
     const { data } = await axios.get('/api/matches', { params: { type } });
     const $l = document.getElementById('match-list');
     if (!data.matches.length) {
-      $l.innerHTML = '<div class="card p-10 text-center text-slate-500"><i class="fas fa-people-arrows text-3xl mb-3 block"></i>No matches yet. Import contacts and add interests, companies or locations — then hit Recompute.</div>';
+      $l.innerHTML = '<div class="card p-10 text-center text-[#a89d8d]"><i class="fas fa-people-arrows text-3xl mb-3 block"></i>No matches yet. Import contacts and add interests, companies or locations — then hit Recompute.</div>';
       return;
     }
     // group by detail
@@ -369,17 +369,17 @@ async function renderMatches() {
       const [type, detail] = key.split('::');
       const ml = MATCH_LABELS[type] || {};
       return `<article class="card p-4 mb-3">
-        <h3 class="text-sm font-semibold mb-2 ${ml.color || ''}"><i class="fas ${ml.icon} mr-1.5"></i>${esc(ml.label)}: <span class="text-white">${esc(detail)}</span> <span class="text-slate-500 font-normal">(${ms.length} pair${ms.length > 1 ? 's' : ''})</span></h3>
+        <h3 class="text-sm font-semibold mb-2 ${ml.color || ''}"><i class="fas ${ml.icon} mr-1.5"></i>${esc(ml.label)}: <span class="text-white">${esc(detail)}</span> <span class="text-[#a89d8d] font-normal">(${ms.length} pair${ms.length > 1 ? 's' : ''})</span></h3>
         <div class="grid sm:grid-cols-2 gap-2">
           ${ms.slice(0, 10).map(m => `
-            <div class="flex items-center gap-2 bg-slate-900 rounded-lg px-3 py-2 text-sm">
+            <div class="flex items-center gap-2 bg-[#faf5ee] rounded-lg px-3 py-2 text-sm">
               <div class="avatar" style="background:${esc(m.color_a)};width:1.7rem;height:1.7rem;font-size:.6rem">${initials(m.name_a)}</div>
               <span class="truncate">${esc(m.name_a)}</span>
-              <i class="fas fa-arrows-left-right text-slate-600 text-xs"></i>
+              <i class="fas fa-arrows-left-right text-[#c4b9a4] text-xs"></i>
               <div class="avatar" style="background:${esc(m.color_b)};width:1.7rem;height:1.7rem;font-size:.6rem">${initials(m.name_b)}</div>
               <span class="truncate">${esc(m.name_b)}</span>
             </div>`).join('')}
-          ${ms.length > 10 ? `<p class="text-xs text-slate-500 self-center">+${ms.length - 10} more…</p>` : ''}
+          ${ms.length > 10 ? `<p class="text-xs text-[#a89d8d] self-center">+${ms.length - 10} more…</p>` : ''}
         </div>
       </article>`;
     }).join('');
@@ -397,26 +397,26 @@ async function renderInterests() {
   $app.innerHTML = `
   <section class="fade-in max-w-3xl mx-auto">
     <h2 class="text-lg font-bold mb-1">My Interests</h2>
-    <p class="text-sm text-slate-400 mb-4">Add your own interests — I'll show which of your contacts share them, so you know who to connect with about what.</p>
+    <p class="text-sm text-[#8a8378] mb-4">Add your own interests — I'll show which of your contacts share them, so you know who to connect with about what.</p>
     <form id="my-interest-form" class="flex gap-2 mb-4">
       <input name="name" placeholder="e.g. film production, golf, AI, real estate…" class="flex-1" required>
       <select name="category"><option>general</option><option>business</option><option>hobby</option><option>industry</option></select>
-      <button class="bg-indigo-600 hover:bg-indigo-500 rounded-lg px-4 text-sm font-semibold"><i class="fas fa-plus"></i></button>
+      <button class="btn-primary rounded-lg px-4 text-sm font-semibold"><i class="fas fa-plus"></i></button>
     </form>
     <div class="flex flex-wrap gap-2 mb-6">
-      ${data.my_interests.map(i => `<span class="interest-tag text-sm !py-1.5 !px-3">${esc(i.name)} <span class="text-indigo-400 text-xs">${esc(i.category)}</span> <button class="del-mine hover:text-red-400 ml-1" data-id="${i.id}"><i class="fas fa-xmark"></i></button></span>`).join('') || '<p class="text-slate-500 text-sm">No interests added yet.</p>'}
+      ${data.my_interests.map(i => `<span class="interest-tag text-sm !py-1.5 !px-3">${esc(i.name)} <span class="text-[#2f5d43] text-xs">${esc(i.category)}</span> <button class="del-mine hover:text-[#c0492f] ml-1" data-id="${i.id}"><i class="fas fa-xmark"></i></button></span>`).join('') || '<p class="text-[#a89d8d] text-sm">No interests added yet.</p>'}
     </div>
-    <h3 class="font-semibold mb-3"><i class="fas fa-user-group text-teal-400 mr-1"></i>Contacts who share your interests</h3>
+    <h3 class="font-semibold mb-3"><i class="fas fa-user-group text-[#2f5d43] mr-1"></i>Contacts who share your interests</h3>
     ${Object.entries(grouped).map(([interest, people]) => `
       <article class="card p-4 mb-3">
-        <h4 class="text-sm font-semibold text-pink-400 mb-2"><i class="fas fa-heart mr-1"></i>${esc(interest)} <span class="text-slate-500 font-normal">(${people.length})</span></h4>
+        <h4 class="text-sm font-semibold text-[#d2604f] mb-2"><i class="fas fa-heart mr-1"></i>${esc(interest)} <span class="text-[#a89d8d] font-normal">(${people.length})</span></h4>
         <div class="flex flex-wrap gap-2">
-          ${people.map(p => `<button class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 rounded-lg px-3 py-1.5 text-sm shared-person" data-id="${p.id}">
+          ${people.map(p => `<button class="flex items-center gap-2 bg-[#faf5ee] hover:bg-[#f3e9da] rounded-lg px-3 py-1.5 text-sm shared-person" data-id="${p.id}">
             <div class="avatar" style="background:${esc(p.avatar_color)};width:1.5rem;height:1.5rem;font-size:.55rem">${initials(p.full_name)}</div>
-            ${esc(p.full_name)}${p.company ? `<span class="text-slate-500 text-xs">· ${esc(p.company)}</span>` : ''}
+            ${esc(p.full_name)}${p.company ? `<span class="text-[#a89d8d] text-xs">· ${esc(p.company)}</span>` : ''}
           </button>`).join('')}
         </div>
-      </article>`).join('') || '<p class="text-slate-500 text-sm card p-6 text-center">No overlaps yet — add interests above and tag your contacts with interests too.</p>'}
+      </article>`).join('') || '<p class="text-[#a89d8d] text-sm card p-6 text-center">No overlaps yet — add interests above and tag your contacts with interests too.</p>'}
   </section>`;
   document.getElementById('my-interest-form').onsubmit = async e => {
     e.preventDefault();
