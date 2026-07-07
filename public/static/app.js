@@ -669,6 +669,68 @@ async function renderInterests() {
   $app.querySelectorAll('.shared-person').forEach(b => b.onclick = () => openContact(b.dataset.id));
 }
 
+/* ---------- Legal modals ---------- */
+const LEGAL_DOCS = {
+  privacy: {
+    title: 'Privacy Policy',
+    body: `
+      <p class="mb-3"><b>Effective date:</b> January 1, 2026</p>
+      <p class="mb-3">MyConnect Hub CRM ("we", "us") respects your privacy. This policy explains what we collect and how we use it.</p>
+      <p class="font-bold mb-1">1. Information we collect</p>
+      <p class="mb-3">Account details (name, email, hashed password) and the contact data you choose to import or enter (names, emails, phone numbers, companies, interests, notes). Demo accounts store the email you provide plus sample data.</p>
+      <p class="font-bold mb-1">2. How we use it</p>
+      <p class="mb-3">Solely to provide the CRM service to you: storing your contacts, merging duplicates, and computing interest and relationship matches. We do not sell, rent, or share your data with third parties for marketing.</p>
+      <p class="font-bold mb-1">3. Your contacts' data</p>
+      <p class="mb-3">You are responsible for ensuring you have the right to upload contact information you import. Imported data is visible only to your account.</p>
+      <p class="font-bold mb-1">4. Storage & security</p>
+      <p class="mb-3">Data is stored on Cloudflare's global infrastructure. Passwords are hashed with PBKDF2 and never stored in plain text. Sessions expire after 30 days.</p>
+      <p class="font-bold mb-1">5. Deletion</p>
+      <p class="mb-3">You may delete contacts at any time in the app. To delete your entire account and data, email us.</p>
+      <p class="font-bold mb-1">6. Contact</p>
+      <p>Questions or requests: <a href="mailto:support@myconnecthub.app" class="footer-link" style="color:#d2604f">support@myconnecthub.app</a></p>`
+  },
+  terms: {
+    title: 'Terms of Use',
+    body: `
+      <p class="mb-3"><b>Effective date:</b> January 1, 2026</p>
+      <p class="font-bold mb-1">1. Acceptance</p>
+      <p class="mb-3">By creating an account or using the demo, you agree to these terms.</p>
+      <p class="font-bold mb-1">2. Your responsibilities</p>
+      <p class="mb-3">You agree to import only contact data you are lawfully permitted to hold, to keep your credentials secure, and not to use the service for spam, harassment, or unlawful outreach.</p>
+      <p class="font-bold mb-1">3. AI features</p>
+      <p class="mb-3">Discovery Engine suggestions are automated inferences and may be inaccurate. Review before relying on them.</p>
+      <p class="font-bold mb-1">4. Service "as is"</p>
+      <p class="mb-3">The service is provided without warranties of any kind. We are not liable for indirect or consequential damages arising from use of the service.</p>
+      <p class="font-bold mb-1">5. Termination</p>
+      <p class="mb-3">We may suspend accounts that violate these terms. You may stop using the service and request deletion at any time.</p>
+      <p class="font-bold mb-1">6. Contact</p>
+      <p>Questions: <a href="mailto:support@myconnecthub.app" class="footer-link" style="color:#d2604f">support@myconnecthub.app</a></p>`
+  }
+};
+
+function openLegal(kind) {
+  const doc = LEGAL_DOCS[kind];
+  if (!doc) return;
+  $modal.innerHTML = `
+  <div class="modal-overlay" id="legal-overlay">
+    <div class="card max-w-lg w-full max-h-[85vh] overflow-y-auto p-6 fade-in">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold">${doc.title}</h2>
+        <button id="close-legal" class="text-[#a89d8d] hover:text-[#333230] text-xl"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="text-sm text-[#57534b] leading-relaxed">${doc.body}</div>
+    </div>
+  </div>`;
+  const close = () => { $modal.innerHTML = ''; };
+  document.getElementById('close-legal').onclick = close;
+  document.getElementById('legal-overlay').addEventListener('click', e => { if (e.target.id === 'legal-overlay') close(); });
+}
+
+document.getElementById('footer-links').addEventListener('click', e => {
+  const btn = e.target.closest('[data-legal]');
+  if (btn) openLegal(btn.dataset.legal);
+});
+
 /* ---------- boot ---------- */
 axios.interceptors.response.use(r => r, err => {
   if (err.response?.status === 401 && !err.config.url.includes('/api/auth/')) {

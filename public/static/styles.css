@@ -250,6 +250,21 @@ input[type="range"] { accent-color: var(--base); border: none !important; box-sh
 .ai-suggestion { border-radius: .9rem !important; transition: opacity .3s, transform .25s, box-shadow .25s; }
 .ai-suggestion:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(60,45,20,.2); }
 
+/* ---------- Footer ---------- */
+#site-footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--line);
+  background: rgba(250, 245, 238, .85);
+  backdrop-filter: blur(10px);
+  margin-top: 2.5rem;
+  color: var(--muted);
+}
+.footer-link {
+  color: var(--muted); font-weight: 600;
+  transition: color .2s, transform .2s;
+}
+.footer-link:hover { color: var(--coral); transform: translateY(-1px); }
+
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { background: #d9cbb4; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #c7b699; }
