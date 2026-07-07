@@ -9,7 +9,7 @@ app.use('/api/*', cors())
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const COLORS = ['#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#8b5cf6', '#ef4444', '#0ea5e9', '#22c55e']
+const COLORS = ['#3d3d3d', '#d2604f', '#6e6a61', '#a3897a', '#57534b', '#b07d6a', '#8a8378', '#4f4b44']
 const pickColor = (name: string) => COLORS[[...name].reduce((a, c) => a + c.charCodeAt(0), 0) % COLORS.length]
 const normPhone = (p: string) => (p || '').replace(/[^\d+]/g, '').replace(/^00/, '+')
 const normEmail = (e: string) => (e || '').trim().toLowerCase()
@@ -407,8 +407,8 @@ app.get('/', (c) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ConnectHub CRM — Your Unified Network</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
+  <title>MyConnect Hub CRM — Your Unified Network</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2242%22 fill=%22%233d3d3d%22/><circle cx=%2236%22 cy=%2242%22 r=%229%22 fill=%22%23faf5ee%22/><circle cx=%2264%22 cy=%2242%22 r=%229%22 fill=%22%23d2604f%22/><circle cx=%2250%22 cy=%2266%22 r=%229%22 fill=%22%23f3e9da%22/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -417,16 +417,16 @@ app.get('/', (c) => {
 </head>
 <body class="min-h-screen">
   <div id="bg-decor" aria-hidden="true">
-    <div class="blob blob-green"></div>
+    <div class="blob blob-gray"></div>
     <div class="blob blob-coral"></div>
     <div class="blob blob-sand"></div>
     <div class="deco-ring"></div>
   </div>
   <header id="topbar" class="sticky top-0 z-40" style="background:rgba(250,245,238,.85);backdrop-filter:blur(10px);border-bottom:1px solid #eadfcd">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
-      <h1 class="text-xl font-bold flex items-center gap-2" style="color:#24402f">
-        <i class="fas fa-circle-nodes" style="color:#2f5d43"></i>
-        Connect<span style="color:#d2604f">Hub</span>&nbsp;CRM
+      <h1 class="text-xl font-bold flex items-center gap-2" style="color:#2a2a2a">
+        <i class="fas fa-circle-nodes" style="color:#3d3d3d"></i>
+        MyConnect&nbsp;<span style="color:#d2604f">Hub</span>&nbsp;CRM
       </h1>
       <nav id="main-nav" class="flex gap-1 text-sm flex-wrap">
         <button data-view="dashboard" class="nav-btn active"><i class="fas fa-chart-pie mr-1"></i>Dashboard</button>

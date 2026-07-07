@@ -12,7 +12,7 @@ const PLATFORMS = [
 ];
 const PLATFORM_ICONS = { phone: 'fa-mobile-screen', email: 'fa-envelope', linkedin: 'fa-brands fa-linkedin', facebook: 'fa-brands fa-facebook', instagram: 'fa-brands fa-instagram', tiktok: 'fa-brands fa-tiktok', manual: 'fa-pen' };
 const REL_TYPES = ['unknown', 'friend', 'business', 'family', 'acquaintance'];
-const MATCH_LABELS = { shared_interest: { icon: 'fa-heart', label: 'Shared Interest', color: 'text-[#d2604f]' }, same_company: { icon: 'fa-building', label: 'Same Company', color: 'text-[#a05f1f]' }, same_location: { icon: 'fa-location-dot', label: 'Same Location', color: 'text-[#2d5c86]' } };
+const MATCH_LABELS = { shared_interest: { icon: 'fa-heart', label: 'Shared Interest', color: 'text-[#d2604f]' }, same_company: { icon: 'fa-building', label: 'Same Company', color: 'text-[#a05f1f]' }, same_location: { icon: 'fa-location-dot', label: 'Same Location', color: 'text-[#6e6a61]' } };
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 const initials = n => (n || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -46,18 +46,18 @@ async function renderDashboard() {
   $app.innerHTML = `
   <section class="fade-in">
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      ${statCard('fa-address-book', 'text-[#2f5d43]', s.total_contacts, 'Total Contacts')}
+      ${statCard('fa-address-book', 'text-[#3d3d3d]', s.total_contacts, 'Total Contacts')}
       ${statCard('fa-people-arrows', 'text-[#d2604f]', s.total_matches, 'Matches Found')}
-      ${statCard('fa-layer-group', 'text-[#2f5d43]', s.multi_platform_contacts, 'Multi-Platform People')}
+      ${statCard('fa-layer-group', 'text-[#3d3d3d]', s.multi_platform_contacts, 'Multi-Platform People')}
       ${statCard('fa-heart', 'text-[#c98a2e]', s.total_interests, 'Interests Tracked')}
     </div>
     <div class="grid lg:grid-cols-2 gap-4">
       <article class="card p-5">
-        <h2 class="font-semibold mb-3"><i class="fas fa-chart-pie text-[#2f5d43] mr-2"></i>Contacts by Platform</h2>
+        <h2 class="font-semibold mb-3"><i class="fas fa-chart-pie text-[#3d3d3d] mr-2"></i>Contacts by Platform</h2>
         <div class="max-w-xs mx-auto"><canvas id="platform-chart"></canvas></div>
       </article>
       <article class="card p-5">
-        <h2 class="font-semibold mb-3"><i class="fas fa-list text-[#2f5d43] mr-2"></i>Platform Breakdown</h2>
+        <h2 class="font-semibold mb-3"><i class="fas fa-list text-[#3d3d3d] mr-2"></i>Platform Breakdown</h2>
         ${platRows}
         <div class="mt-4 pt-4 border-t border-[#eadfcd]">
           <button onclick="document.querySelector('[data-view=import]').click()" class="w-full btn-primary rounded-lg py-2.5 font-semibold text-sm"><i class="fas fa-file-import mr-2"></i>Import Contacts</button>
@@ -70,7 +70,7 @@ async function renderDashboard() {
       type: 'doughnut',
       data: {
         labels: s.by_platform.map(p => p.platform),
-        datasets: [{ data: s.by_platform.map(p => p.n), backgroundColor: ['#2f5d43', '#d2604f', '#5b8aa6', '#8fb996', '#e0a458', '#7d7468', '#a97c9e'], borderWidth: 3, borderColor: '#ffffff', hoverOffset: 10 }]
+        datasets: [{ data: s.by_platform.map(p => p.n), backgroundColor: ['#3d3d3d', '#d2604f', '#8a8378', '#b5aca0', '#e0a458', '#5c5952', '#c9beae'], borderWidth: 3, borderColor: '#ffffff', hoverOffset: 10 }]
       },
       options: { plugins: { legend: { labels: { color: '#5a5245', font: { family: 'Quicksand', weight: '600' } } } } }
     });
@@ -159,7 +159,7 @@ async function openContact(id) {
         ${c.location ? `<p><i class="fas fa-location-dot text-[#a89d8d] mr-2 w-4"></i>${esc(c.location)}</p>` : ''}
         <p><i class="fas fa-user-tag text-[#a89d8d] mr-2 w-4"></i>${esc(c.relationship_type)} · strength ${'★'.repeat(c.strength)}${'☆'.repeat(5 - c.strength)}</p>
       </div>
-      ${c.notes ? `<p class="text-sm bg-[#faf5ee] rounded-lg p-3 mb-4 text-[#4a5a4e]"><i class="fas fa-note-sticky text-[#a89d8d] mr-2"></i>${esc(c.notes)}</p>` : ''}
+      ${c.notes ? `<p class="text-sm bg-[#faf5ee] rounded-lg p-3 mb-4 text-[#57534b]"><i class="fas fa-note-sticky text-[#a89d8d] mr-2"></i>${esc(c.notes)}</p>` : ''}
 
       <section class="mb-4">
         <h3 class="font-semibold text-sm mb-2"><i class="fas fa-heart text-[#d2604f] mr-1"></i>Interests</h3>
@@ -173,7 +173,7 @@ async function openContact(id) {
       </section>
 
       <section class="mb-4">
-        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-people-arrows text-[#2f5d43] mr-1"></i>Connections & Matches (${data.matches.length})</h3>
+        <h3 class="font-semibold text-sm mb-2"><i class="fas fa-people-arrows text-[#3d3d3d] mr-1"></i>Connections & Matches (${data.matches.length})</h3>
         <div class="space-y-1.5 max-h-44 overflow-y-auto">
           ${data.matches.map(m => {
             const ml = MATCH_LABELS[m.match_type] || {};
@@ -283,14 +283,14 @@ function renderImport() {
     <div class="grid sm:grid-cols-2 gap-3 mb-6" id="platform-cards">
       ${PLATFORMS.map(p => `
         <button class="card p-4 text-left transition platform-pick" data-platform="${p.id}">
-          <i class="fas ${p.icon} text-[#2f5d43] text-xl mb-2 block"></i>
+          <i class="fas ${p.icon} text-[#3d3d3d] text-xl mb-2 block"></i>
           <span class="font-semibold text-sm">${p.label}</span>
           <p class="text-xs text-[#a89d8d] mt-1">${p.hint}</p>
         </button>`).join('')}
     </div>
     <div id="upload-area" class="hidden">
       <div class="drop-zone p-10 text-center cursor-pointer" id="drop-zone">
-        <i class="fas fa-cloud-arrow-up text-3xl text-[#2f5d43] mb-3 block"></i>
+        <i class="fas fa-cloud-arrow-up text-3xl text-[#3d3d3d] mb-3 block"></i>
         <p class="font-semibold" id="upload-title">Drop your file here or click to browse</p>
         <p class="text-xs text-[#a89d8d] mt-1">Accepts .csv and .vcf files (max 1000 contacts per import)</p>
         <input type="file" id="file-input" accept=".csv,.vcf,.txt" class="hidden">
@@ -300,8 +300,8 @@ function renderImport() {
   </section>`;
   let selectedPlatform = null;
   document.querySelectorAll('.platform-pick').forEach(btn => btn.onclick = () => {
-    document.querySelectorAll('.platform-pick').forEach(b => b.classList.remove('ring-2', 'ring-[#2f5d43]'));
-    btn.classList.add('ring-2', 'ring-[#2f5d43]');
+    document.querySelectorAll('.platform-pick').forEach(b => b.classList.remove('ring-2', 'ring-[#3d3d3d]'));
+    btn.classList.add('ring-2', 'ring-[#3d3d3d]');
     selectedPlatform = btn.dataset.platform;
     document.getElementById('upload-area').classList.remove('hidden');
     document.getElementById('upload-title').textContent = `Upload your ${PLATFORMS.find(p => p.id === selectedPlatform).label} file`;
@@ -323,9 +323,9 @@ function renderImport() {
     try {
       const { data } = await axios.post('/api/import', fd);
       $r.innerHTML = `
-        <div class="card p-4 border-[#bcd6c2] fade-in">
-          <p class="font-semibold text-[#2f5d43] mb-1"><i class="fas fa-check-circle mr-1"></i>Import complete!</p>
-          <p class="text-sm text-[#4a5a4e]">Parsed <b>${data.parsed}</b> rows → <b>${data.added}</b> new contacts added, <b>${data.merged}</b> merged with existing people. <b>${data.matches}</b> total matches computed.</p>
+        <div class="card p-4 border-[#d6d3cd] fade-in">
+          <p class="font-semibold text-[#3d3d3d] mb-1"><i class="fas fa-check-circle mr-1"></i>Import complete!</p>
+          <p class="text-sm text-[#57534b]">Parsed <b>${data.parsed}</b> rows → <b>${data.added}</b> new contacts added, <b>${data.merged}</b> merged with existing people. <b>${data.matches}</b> total matches computed.</p>
           <button onclick="document.querySelector('[data-view=contacts]').click()" class="mt-3 btn-primary rounded-lg px-4 py-2 text-sm font-semibold">View Contacts →</button>
         </div>`;
     } catch (err) {
@@ -404,9 +404,9 @@ async function renderInterests() {
       <button class="btn-primary rounded-lg px-4 text-sm font-semibold"><i class="fas fa-plus"></i></button>
     </form>
     <div class="flex flex-wrap gap-2 mb-6">
-      ${data.my_interests.map(i => `<span class="interest-tag text-sm !py-1.5 !px-3">${esc(i.name)} <span class="text-[#2f5d43] text-xs">${esc(i.category)}</span> <button class="del-mine hover:text-[#c0492f] ml-1" data-id="${i.id}"><i class="fas fa-xmark"></i></button></span>`).join('') || '<p class="text-[#a89d8d] text-sm">No interests added yet.</p>'}
+      ${data.my_interests.map(i => `<span class="interest-tag text-sm !py-1.5 !px-3">${esc(i.name)} <span class="text-[#3d3d3d] text-xs">${esc(i.category)}</span> <button class="del-mine hover:text-[#c0492f] ml-1" data-id="${i.id}"><i class="fas fa-xmark"></i></button></span>`).join('') || '<p class="text-[#a89d8d] text-sm">No interests added yet.</p>'}
     </div>
-    <h3 class="font-semibold mb-3"><i class="fas fa-user-group text-[#2f5d43] mr-1"></i>Contacts who share your interests</h3>
+    <h3 class="font-semibold mb-3"><i class="fas fa-user-group text-[#3d3d3d] mr-1"></i>Contacts who share your interests</h3>
     ${Object.entries(grouped).map(([interest, people]) => `
       <article class="card p-4 mb-3">
         <h4 class="text-sm font-semibold text-[#d2604f] mb-2"><i class="fas fa-heart mr-1"></i>${esc(interest)} <span class="text-[#a89d8d] font-normal">(${people.length})</span></h4>

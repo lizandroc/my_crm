@@ -1,13 +1,13 @@
 -- Demo contacts across platforms
 INSERT OR IGNORE INTO contacts (id, full_name, first_name, last_name, email, phone, company, job_title, location, relationship_type, strength, avatar_color) VALUES
-  (1, 'Ava Martinez', 'Ava', 'Martinez', 'ava.martinez@example.com', '+15551230001', 'Sunset Films', 'Executive Producer', 'Los Angeles', 'business', 5, '#ec4899'),
-  (2, 'Ben Carter', 'Ben', 'Carter', 'ben.carter@example.com', '+15551230002', 'Sunset Films', 'Director of Photography', 'Los Angeles', 'business', 4, '#6366f1'),
-  (3, 'Chloe Nguyen', 'Chloe', 'Nguyen', 'chloe.n@example.com', '+15551230003', 'StreamVerse', 'Content Strategist', 'New York', 'friend', 4, '#14b8a6'),
-  (4, 'David Okafor', 'David', 'Okafor', 'd.okafor@example.com', '+15551230004', 'Bright Media', 'Talent Agent', 'Los Angeles', 'business', 3, '#f59e0b'),
-  (5, 'Emma Rossi', 'Emma', 'Rossi', 'emma.rossi@example.com', '+15551230005', 'StreamVerse', 'VP Development', 'New York', 'business', 5, '#8b5cf6'),
-  (6, 'Frank Liu', 'Frank', 'Liu', 'frank.liu@example.com', '+15551230006', NULL, 'Screenwriter', 'Los Angeles', 'friend', 4, '#ef4444'),
-  (7, 'Grace Kim', 'Grace', 'Kim', 'grace.kim@example.com', '+15551230007', 'Bright Media', 'Social Media Lead', 'Chicago', 'acquaintance', 2, '#0ea5e9'),
-  (8, 'Hassan Ali', 'Hassan', 'Ali', 'hassan.ali@example.com', '+15551230008', NULL, 'Film Composer', 'New York', 'friend', 3, '#22c55e');
+  (1, 'Ava Martinez', 'Ava', 'Martinez', 'ava.martinez@example.com', '+15551230001', 'Sunset Films', 'Executive Producer', 'Los Angeles', 'business', 5, '#d2604f'),
+  (2, 'Ben Carter', 'Ben', 'Carter', 'ben.carter@example.com', '+15551230002', 'Sunset Films', 'Director of Photography', 'Los Angeles', 'business', 4, '#3d3d3d'),
+  (3, 'Chloe Nguyen', 'Chloe', 'Nguyen', 'chloe.n@example.com', '+15551230003', 'StreamVerse', 'Content Strategist', 'New York', 'friend', 4, '#6e6a61'),
+  (4, 'David Okafor', 'David', 'Okafor', 'd.okafor@example.com', '+15551230004', 'Bright Media', 'Talent Agent', 'Los Angeles', 'business', 3, '#a3897a'),
+  (5, 'Emma Rossi', 'Emma', 'Rossi', 'emma.rossi@example.com', '+15551230005', 'StreamVerse', 'VP Development', 'New York', 'business', 5, '#57534b'),
+  (6, 'Frank Liu', 'Frank', 'Liu', 'frank.liu@example.com', '+15551230006', NULL, 'Screenwriter', 'Los Angeles', 'friend', 4, '#b07d6a'),
+  (7, 'Grace Kim', 'Grace', 'Kim', 'grace.kim@example.com', '+15551230007', 'Bright Media', 'Social Media Lead', 'Chicago', 'acquaintance', 2, '#8a8378'),
+  (8, 'Hassan Ali', 'Hassan', 'Ali', 'hassan.ali@example.com', '+15551230008', NULL, 'Film Composer', 'New York', 'friend', 3, '#4f4b44');
 
 INSERT OR IGNORE INTO contact_sources (contact_id, platform, handle) VALUES
   (1, 'phone', NULL), (1, 'linkedin', 'linkedin.com/in/avamartinez'), (1, 'instagram', '@ava.makesfilms'),

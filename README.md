@@ -1,7 +1,7 @@
-# ConnectHub CRM
+# MyConnect Hub CRM
 
 ## Project Overview
-- **Name**: ConnectHub CRM
+- **Name**: MyConnect Hub CRM
 - **Goal**: Unify contacts from phone, email, LinkedIn, Facebook, Instagram and TikTok into one personal CRM, automatically merge duplicates across platforms, and surface matches based on shared interests, companies, locations, friendships and business ties.
 - **Owner**: Liz
 
