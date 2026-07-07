@@ -1,0 +1,65 @@
+.nav-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  transition: all .15s;
+}
+.nav-btn:hover { color: #e2e8f0; background: #1e293b; }
+.nav-btn.active { color: #fff; background: #4f46e5; }
+
+.card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.75rem;
+}
+
+.platform-badge {
+  display: inline-flex; align-items: center; gap: .25rem;
+  font-size: .65rem; padding: .15rem .5rem; border-radius: 999px;
+  font-weight: 600; text-transform: capitalize;
+}
+.pb-phone     { background: #14532d; color: #86efac; }
+.pb-email     { background: #7c2d12; color: #fdba74; }
+.pb-linkedin  { background: #1e3a8a; color: #93c5fd; }
+.pb-facebook  { background: #1e40af; color: #bfdbfe; }
+.pb-instagram { background: #831843; color: #f9a8d4; }
+.pb-tiktok    { background: #3f3f46; color: #e4e4e7; }
+.pb-manual    { background: #4c1d95; color: #c4b5fd; }
+
+.interest-tag {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: #312e81; color: #c7d2fe;
+  font-size: .7rem; padding: .2rem .6rem; border-radius: 999px;
+}
+
+.avatar {
+  width: 2.5rem; height: 2.5rem; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: #fff; flex-shrink: 0;
+}
+
+.drop-zone {
+  border: 2px dashed #334155; border-radius: 1rem;
+  transition: all .2s;
+}
+.drop-zone.dragover { border-color: #6366f1; background: #1e1b4b; }
+
+input, select, textarea {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+  border-radius: .5rem;
+  padding: .5rem .75rem;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid #6366f1; border-color: transparent !important; }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(2,6,23,.8);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50; padding: 1rem;
+}
+.fade-in { animation: fadeIn .2s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
