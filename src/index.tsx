@@ -34,13 +34,21 @@ async function createSession(db: D1Database, userId: number) {
 }
 
 function sessionCookie(c: any, token: string) {
-  setCookie(c, 'session', token, { httpOnly: true, sameSite: 'Lax', path: '/', maxAge: 60 * 60 * 24 * 30 })
+  // SameSite=None + Secure so the cookie also works when the app is embedded in an iframe (e.g. preview panes)
+  setCookie(c, 'session', token, { httpOnly: true, sameSite: 'None', secure: true, path: '/', maxAge: 60 * 60 * 24 * 30 })
+}
+
+// Extract session token from Authorization: Bearer header (primary) or cookie (fallback)
+function getSessionToken(c: any): string | undefined {
+  const auth = c.req.header('Authorization')
+  if (auth && auth.startsWith('Bearer ')) return auth.slice(7)
+  return getCookie(c, 'session')
 }
 
 // Auth middleware — everything under /api except /api/auth/* requires a session
 app.use('/api/*', async (c, next) => {
   if (c.req.path.startsWith('/api/auth/')) return next()
-  const token = getCookie(c, 'session')
+  const token = getSessionToken(c)
   if (token) {
     const row = await c.env.DB.prepare(`
       SELECT u.id, u.email, u.is_demo FROM sessions s JOIN users u ON u.id = s.user_id
@@ -307,8 +315,9 @@ app.post('/api/auth/signup', async (c) => {
       .bind(em, clean(name) || null, hash).run()
     userId = res.meta.last_row_id as number
   }
-  sessionCookie(c, await createSession(db, userId))
-  return c.json({ ok: true, email: em, name: clean(name) || null, demo: false })
+  const token = await createSession(db, userId)
+  sessionCookie(c, token)
+  return c.json({ ok: true, token, email: em, name: clean(name) || null, demo: false })
 })
 
 app.post('/api/auth/login', async (c) => {
@@ -319,8 +328,9 @@ app.post('/api/auth/login', async (c) => {
     .first<{ id: number; name: string; password_hash: string | null; is_demo: number }>()
   if (!user || !user.password_hash || !(await verifyPassword(password || '', user.password_hash)))
     return c.json({ error: 'Invalid email or password' }, 401)
-  sessionCookie(c, await createSession(db, user.id))
-  return c.json({ ok: true, email: em, name: user.name, demo: !!user.is_demo })
+  const token = await createSession(db, user.id)
+  sessionCookie(c, token)
+  return c.json({ ok: true, token, email: em, name: user.name, demo: !!user.is_demo })
 })
 
 // Demo: enter an email, get an instant pre-loaded workspace
@@ -340,8 +350,9 @@ app.post('/api/auth/demo', async (c) => {
     fresh = true
   }
   if (fresh) await seedDemoData(db, userId)
-  sessionCookie(c, await createSession(db, userId))
-  return c.json({ ok: true, email: em, demo: true, seeded: fresh })
+  const token = await createSession(db, userId)
+  sessionCookie(c, token)
+  return c.json({ ok: true, token, email: em, demo: true, seeded: fresh })
 })
 
 // Google OAuth placeholder — needs GOOGLE_CLIENT_ID configured to activate
@@ -350,14 +361,14 @@ app.post('/api/auth/google', async (c) => {
 })
 
 app.post('/api/auth/logout', async (c) => {
-  const token = getCookie(c, 'session')
+  const token = getSessionToken(c)
   if (token) await c.env.DB.prepare('DELETE FROM sessions WHERE token = ?').bind(token).run()
   deleteCookie(c, 'session', { path: '/' })
   return c.json({ ok: true })
 })
 
 app.get('/api/auth/me', async (c) => {
-  const token = getCookie(c, 'session')
+  const token = getSessionToken(c)
   if (token) {
     const row = await c.env.DB.prepare(`
       SELECT u.id, u.email, u.name, u.is_demo FROM sessions s JOIN users u ON u.id = s.user_id

@@ -21,6 +21,20 @@ const badge = p => `<span class="platform-badge pb-${esc(p)}"><i class="fas ${PL
 let currentView = 'dashboard';
 let currentUser = null;
 
+/* Token-based auth: works even where cookies are blocked (iframes / strict browsers) */
+const TOKEN_KEY = 'mch_session';
+const savedToken = localStorage.getItem(TOKEN_KEY);
+if (savedToken) axios.defaults.headers.common['Authorization'] = 'Bearer ' + savedToken;
+function storeToken(token) {
+  if (!token) return;
+  localStorage.setItem(TOKEN_KEY, token);
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
+function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
+  delete axios.defaults.headers.common['Authorization'];
+}
+
 /* ---------- auth / landing ---------- */
 const $topbar = document.getElementById('topbar');
 
@@ -52,7 +66,8 @@ function renderUserChip() {
     <button id="logout-btn" class="btn-soft rounded-lg px-3 py-1.5 font-semibold" title="Sign out"><i class="fas fa-right-from-bracket"></i></button>`;
   document.querySelector('#topbar > div').appendChild(chip);
   document.getElementById('logout-btn').onclick = async () => {
-    await axios.post('/api/auth/logout');
+    try { await axios.post('/api/auth/logout'); } catch (e) { /* ignore */ }
+    clearToken();
     currentUser = null;
     location.reload();
   };
@@ -139,19 +154,33 @@ function renderLanding() {
 
   document.getElementById('signin-form').onsubmit = async e => {
     e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"], button');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     try {
       const f = Object.fromEntries(new FormData(e.target));
       const { data } = await axios.post('/api/auth/login', f);
+      storeToken(data.token);
       currentUser = data; enterApp();
-    } catch (err) { showError(err.response?.data?.error || 'Sign in failed'); }
+    } catch (err) {
+      btn.innerHTML = orig;
+      showError(err.response?.data?.error || 'Sign in failed — please try again');
+    }
   };
   document.getElementById('signup-form').onsubmit = async e => {
     e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"], button');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     try {
       const f = Object.fromEntries(new FormData(e.target));
       const { data } = await axios.post('/api/auth/signup', f);
+      storeToken(data.token);
       currentUser = data; enterApp();
-    } catch (err) { showError(err.response?.data?.error || 'Sign up failed'); }
+    } catch (err) {
+      btn.innerHTML = orig;
+      showError(err.response?.data?.error || 'Sign up failed — please try again');
+    }
   };
   document.getElementById('demo-form').onsubmit = async e => {
     e.preventDefault();
@@ -160,8 +189,9 @@ function renderLanding() {
     try {
       const f = Object.fromEntries(new FormData(e.target));
       const { data } = await axios.post('/api/auth/demo', f);
+      storeToken(data.token);
       currentUser = data; enterApp();
-    } catch (err) { btn.textContent = 'Demo'; showError(err.response?.data?.error || 'Demo failed'); }
+    } catch (err) { btn.textContent = 'Demo'; showError(err.response?.data?.error || 'Demo failed — please try again'); }
   };
   document.getElementById('google-btn').onclick = async () => {
     try { await axios.post('/api/auth/google'); }
@@ -734,6 +764,7 @@ document.getElementById('footer-links').addEventListener('click', e => {
 /* ---------- boot ---------- */
 axios.interceptors.response.use(r => r, err => {
   if (err.response?.status === 401 && !err.config.url.includes('/api/auth/')) {
+    clearToken();
     currentUser = null;
     renderLanding();
   }
