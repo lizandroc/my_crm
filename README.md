@@ -6,6 +6,7 @@
 - **Owner**: Liz
 
 ## URLs
+- **GitHub**: https://github.com/lizandroc/my_crm
 - **Sandbox (dev)**: https://3000-i13fighxsv6oz40dkfgx7-dfc00ec5.sandbox.novita.ai
 - **Production**: not deployed yet (Cloudflare Pages ready)
 
