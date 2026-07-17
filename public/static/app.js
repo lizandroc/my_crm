@@ -552,6 +552,7 @@ function renderImport() {
   <section class="fade-in max-w-3xl mx-auto">
     <h2 class="text-lg font-bold mb-1">Import Your Contacts</h2>
     <p class="text-sm text-[#8a8378] mb-5">Social networks don't allow apps to pull contacts directly — but you can export them yourself and upload here. Duplicates are automatically merged across platforms.</p>
+    <p class="text-xs font-bold uppercase tracking-wide text-[#a89d8d] mb-2">Step 1 — Choose where your file comes from</p>
     <div class="grid sm:grid-cols-2 gap-3 mb-6" id="platform-cards">
       ${PLATFORMS.map(p => `
         <button class="card p-4 text-left transition platform-pick" data-platform="${p.id}">
@@ -560,10 +561,11 @@ function renderImport() {
           <p class="text-xs text-[#a89d8d] mt-1">${p.hint}</p>
         </button>`).join('')}
     </div>
-    <div id="upload-area" class="hidden">
-      <div class="drop-zone p-10 text-center cursor-pointer" id="drop-zone">
+    <div id="upload-area">
+      <p class="text-xs font-bold uppercase tracking-wide text-[#a89d8d] mb-2">Step 2 — Upload your file</p>
+      <div class="drop-zone p-10 text-center cursor-pointer" id="drop-zone" style="opacity:.55">
         <i class="fas fa-cloud-arrow-up text-3xl text-[#3d3d3d] mb-3 block"></i>
-        <p class="font-semibold" id="upload-title">Drop your file here or click to browse</p>
+        <p class="font-semibold" id="upload-title">First choose a platform above</p>
         <p class="text-xs text-[#a89d8d] mt-1">Accepts .csv and .vcf files (max 1000 contacts per import)</p>
         <input type="file" id="file-input" accept=".csv,.vcf,.txt" class="hidden">
       </div>
@@ -575,15 +577,22 @@ function renderImport() {
     document.querySelectorAll('.platform-pick').forEach(b => b.classList.remove('ring-2', 'ring-[#3d3d3d]'));
     btn.classList.add('ring-2', 'ring-[#3d3d3d]');
     selectedPlatform = btn.dataset.platform;
-    document.getElementById('upload-area').classList.remove('hidden');
-    document.getElementById('upload-title').textContent = `Upload your ${PLATFORMS.find(p => p.id === selectedPlatform).label} file`;
+    const dzEl = document.getElementById('drop-zone');
+    dzEl.style.opacity = '1';
+    document.getElementById('upload-title').textContent = `Upload your ${PLATFORMS.find(p => p.id === selectedPlatform).label} file — drop it here or click to browse`;
+    document.getElementById('import-result').innerHTML = '';
+    dzEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   const dz = document.getElementById('drop-zone');
   const fi = document.getElementById('file-input');
-  dz.onclick = () => fi.click();
+  function needPlatform() {
+    document.getElementById('import-result').innerHTML = '<div class="card p-3 border-[#eec6bd]"><p class="text-[#c0492f] text-sm"><i class="fas fa-hand-pointer mr-1"></i>Please choose a platform above first (Step 1), then upload your file.</p></div>';
+    document.getElementById('platform-cards').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  dz.onclick = () => { if (!selectedPlatform) return needPlatform(); fi.click(); };
   dz.ondragover = e => { e.preventDefault(); dz.classList.add('dragover'); };
   dz.ondragleave = () => dz.classList.remove('dragover');
-  dz.ondrop = e => { e.preventDefault(); dz.classList.remove('dragover'); if (e.dataTransfer.files[0]) upload(e.dataTransfer.files[0]); };
+  dz.ondrop = e => { e.preventDefault(); dz.classList.remove('dragover'); if (!selectedPlatform) return needPlatform(); if (e.dataTransfer.files[0]) upload(e.dataTransfer.files[0]); };
   fi.onchange = () => fi.files[0] && upload(fi.files[0]);
 
   async function upload(file) {
@@ -705,7 +714,7 @@ const LEGAL_DOCS = {
     title: 'Privacy Policy',
     body: `
       <p class="mb-3"><b>Effective date:</b> January 1, 2026</p>
-      <p class="mb-3">MyConnect Hub CRM ("we", "us") respects your privacy. This policy explains what we collect and how we use it.</p>
+      <p class="mb-3">MyConnectHub.net ("we", "us") respects your privacy. This policy explains what we collect and how we use it.</p>
       <p class="font-bold mb-1">1. Information we collect</p>
       <p class="mb-3">Account details (name, email, hashed password) and the contact data you choose to import or enter (names, emails, phone numbers, companies, interests, notes). Demo accounts store the email you provide plus sample data.</p>
       <p class="font-bold mb-1">2. How we use it</p>
@@ -717,7 +726,7 @@ const LEGAL_DOCS = {
       <p class="font-bold mb-1">5. Deletion</p>
       <p class="mb-3">You may delete contacts at any time in the app. To delete your entire account and data, email us.</p>
       <p class="font-bold mb-1">6. Contact</p>
-      <p>Questions or requests: <a href="mailto:support@myconnecthub.app" class="footer-link" style="color:#d2604f">support@myconnecthub.app</a></p>`
+      <p>Questions or requests: <a href="mailto:support@MyConnectHub.net" class="footer-link" style="color:#d2604f">support@MyConnectHub.net</a></p>`
   },
   terms: {
     title: 'Terms of Use',
@@ -734,7 +743,7 @@ const LEGAL_DOCS = {
       <p class="font-bold mb-1">5. Termination</p>
       <p class="mb-3">We may suspend accounts that violate these terms. You may stop using the service and request deletion at any time.</p>
       <p class="font-bold mb-1">6. Contact</p>
-      <p>Questions: <a href="mailto:support@myconnecthub.app" class="footer-link" style="color:#d2604f">support@myconnecthub.app</a></p>`
+      <p>Questions: <a href="mailto:support@MyConnectHub.net" class="footer-link" style="color:#d2604f">support@MyConnectHub.net</a></p>`
   }
 };
 

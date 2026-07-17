@@ -696,9 +696,9 @@ app.get('/', (c) => {
   <main id="app" class="max-w-7xl mx-auto px-4 py-6"></main>
   <footer id="site-footer">
     <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-      <p id="copyright-notice">&copy; 2026 MyConnect Hub CRM. All rights reserved.</p>
+      <p id="copyright-notice">&copy; 2026 MyConnectHub.net. All rights reserved.</p>
       <nav id="footer-links" class="flex items-center gap-5">
-        <a href="mailto:support@myconnecthub.app" class="footer-link"><i class="fas fa-envelope mr-1"></i>support@myconnecthub.app</a>
+        <a href="mailto:support@MyConnectHub.net" class="footer-link"><i class="fas fa-envelope mr-1"></i>support@MyConnectHub.net</a>
         <button type="button" class="footer-link" data-legal="privacy">Privacy Policy</button>
         <button type="button" class="footer-link" data-legal="terms">Terms of Use</button>
       </nav>
