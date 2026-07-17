@@ -9,7 +9,7 @@
 - **GitHub**: https://github.com/lizandroc/my_crm
 - **Sandbox (dev)**: https://3000-i13fighxsv6oz40dkfgx7-dfc00ec5.sandbox.novita.ai
 - **Production**: https://myconnect-hub.pages.dev
-- **Custom Domain**: https://myconnecthub.net (attached to Pages project; activates once the CNAME DNS record is added)
+- **Custom Domain**: https://myconnecthub.net — LIVE
 
 ## Currently Completed Features
 - Landing/intro page with sign-in, create-account, Google button (placeholder until OAuth Client ID provided) and instant email demo
