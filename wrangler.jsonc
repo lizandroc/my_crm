@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webapp",
+  "name": "myconnect-hub",
   "compatibility_date": "2026-04-26",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": ["nodejs_compat"],
@@ -8,7 +8,7 @@
     {
       "binding": "DB",
       "database_name": "webapp-production",
-      "database_id": "local-dev-placeholder"
+      "database_id": "c66fc6e5-8991-4fd9-8a9a-e73f092a0d67"
     }
   ]
 }
